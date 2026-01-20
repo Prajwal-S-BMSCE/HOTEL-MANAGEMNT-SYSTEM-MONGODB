@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Book a Room - Hotel AnCasa{% endblock %}
+
+{% block head %}
+    <!-- 
+      THIS IS THE FIX!
+      We are linking our new, colorful CSS file.
+    -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='book_room1.css') }}">
+    
+    <!-- Google Fonts for the text -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+    <!-- This new wrapper applies the background image -->
+    <div class="book-now-page-wrapper">
+        
+        <!-- This is the semi-transparent form container -->
+        <div class="booking-container-transparent">
+
+            <h2>Reservation Form</h2>
+            
+            <form action="{{ url_for('submit_booking') }}" method="POST" class="booking-form">
+                
+                <!-- Personal Information -->
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="form-input" placeholder="Enter your phone number" required>
+                </div>
+                
+                <!-- Booking Details Grid -->
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="checkin">Check-In Date</label>
+                        <input type="date" id="checkin" name="checkin" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkout">Check-Out Date</label>
+                        <input type="date" id="checkout" name="checkout" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guests">Number of Guests</label>
+                        <select id="guests" name="guests" class="form-input" required>
+                            <option value="" disabled selected>Select number of guests</option>
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5 Guests</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>&nbsp;</label> <!-- Empty label for alignment -->
+                        <button type="button" id="check-availability-btn" class="btn-vibrant">Check Availability</button>
+                    </div>
+                </div> <!-- End of form-grid -->
+
+                <!-- Room Selection Dropdown -->
+                <div class="form-group">
+                    <label for="room_number">Available Rooms</label>
+                    <select id="room_number" name="room_number" class="form-input" required disabled>
+                        <option value="" disabled selected>Please check availability first</option>
+                        <!-- This will be filled by JavaScript -->
+                    </select>
+                </div>
+
+                <!-- Additional Preferences -->
+                <div class="form-group">
+                    <label for="preferences">Additional Preferences</label>
+                    <textarea id="preferences" name="preferences" rows="4" class="form-input" placeholder="E.g., Allergies, specific requests"></textarea>
+                </div>
+
+                <!-- Flash Messages for Errors -->
+                <div id="booking-error" class="flash danger" style="display:none;"></div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="reserve-btn" class="btn-vibrant" style="display:none;">Reserve Now</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    <!-- This is the full, working JavaScript for your page -->
+    <script>
+        document.getElementById('check-availability-btn').addEventListener('click', function() {
+            const checkin = document.getElementById('checkin').value;
+            const checkout = document.getElementById('checkout').value;
+            const reserveBtn = document.getElementById('reserve-btn');
+            const roomSelect = document.getElementById('room_number');
+            const errorDiv = document.getElementById('booking-error');
+
+            if (!checkin || !checkout) {
+                errorDiv.textContent = 'Please select both a check-in and check-out date.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // Disable button during fetch
+            this.textContent = "Checking...";
+            this.disabled = true;
+            errorDiv.style.display = 'none';
+
+            // --- This is the API call ---
+            fetch(`/api/available_rooms?checkin=${checkin}&checkout=${checkout}`)
+                .then(response => {
+                    if (!response.ok) {
+                         // Try to parse error message from server
+                        return response.json().then(err => { 
+                            throw new Error(err.error || `Server error: ${response.status}`) 
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Clear old options
+                    roomSelect.innerHTML = '<option value="" disabled selected>Select an available room</option>';
+
+                    if (data.length === 0) {
+                        roomSelect.innerHTML = '<option value="" disabled>No rooms available for these dates</option>';
+                        roomSelect.disabled = true;
+                        reserveBtn.style.display = 'none';
+                    } else {
+                        // Populate dropdown with new options
+                        data.forEach(room => {
+                            const option = document.createElement('option');
+                            // We store the room_number as the value
+                            option.value = room.room_number;
+                            // We show the user the friendly name and price
+                            option.textContent = `${room.room_type} (Room ${room.number}) - ₹${room.price}/night`;
+                            roomSelect.appendChild(option);
+                        });
+                        
+                        roomSelect.disabled = false;
+                        reserveBtn.style.display = 'block'; // Show the "Reserve Now" button
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    errorDiv.textContent = `Could not check availability: ${error.message}`;
+                    errorDiv.style.display = 'block';
+                    roomSelect.disabled = true;
+                    reserveBtn.style.display = 'none';
+                })
+                .finally(() => {
+                    // Re-enable button
+                    this.textContent = "Check Availability";
+                    this.disabled = false;
+                });
+        });
+
+        // --- JavaScript for Date Validation ---
+        
+        // Set minimum check-in date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('checkin').min = today;
+
+        // When check-in date changes, set minimum check-out date
+        document.getElementById('checkin').addEventListener('change', function() {
+            const checkinDate = new Date(this.value);
+            // Add 1 day
+            checkinDate.setDate(checkinDate.getDate() + 1); 
+            const minCheckoutDate = checkinDate.toISOString().split('T')[0];
+            
+            document.getElementById('checkout').min = minCheckoutDate;
+            
+             // Also reset checkout if it's now invalid
+            if (document.getElementById('checkout').value < minCheckoutDate) {
+                 document.getElementById('checkout').value = minCheckoutDate;
+            }
+        });
+    </script>
+{% endblock %}

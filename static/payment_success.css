@@ -1,0 +1,170 @@
+/* =========================================
+   VIBRANT SUCCESS PAGE (success_vibrant.css)
+   ========================================= */
+
+/* 1. Background & Wrapper */
+.success-page-wrapper {
+    /* A celebratory background */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden; /* For confetti */
+}
+
+/* 2. The Success Card */
+.success-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 10; /* Above confetti */
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* 3. Success Icon */
+.success-icon-container {
+    width: 80px;
+    height: 80px;
+    background: #d1fae5; /* Light green circle */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px auto;
+}
+
+.success-icon {
+    font-size: 40px;
+    color: #10b981; /* Green check */
+}
+
+/* 4. Typography */
+.success-card h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.success-card p.subtitle {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* 5. Invoice Details Box */
+.invoice-details {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.invoice-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #555;
+}
+
+.invoice-row span:last-child {
+    font-weight: 600;
+    color: #333;
+}
+
+.invoice-divider {
+    border-top: 1px dashed #ccc;
+    margin: 15px 0;
+}
+
+.invoice-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+}
+
+.invoice-total span:last-child {
+    color: #10b981; /* Green for money */
+}
+
+/* 6. Buttons */
+.btn-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-download {
+    background: #3b82f6; /* Blue */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-download:hover {
+    background: #2563eb;
+}
+
+.btn-home {
+    background: #f3f4f6;
+    color: #333;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.btn-home:hover {
+    background: #e5e7eb;
+}
+
+/* 7. Print Styles (Hides buttons when printing) */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .success-card, .success-card * {
+        visibility: visible;
+    }
+    .success-card {
+        position: absolute;
+        left: 0;
+        top: 0;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    .btn-group {
+        display: none;
+    }
+    .success-page-wrapper {
+        background: white;
+    }
+}

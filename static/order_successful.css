@@ -1,0 +1,69 @@
+/* =========================================
+   ORDER SUCCESSFUL PAGE (order_successful.css)
+   ========================================= */
+
+/* We have to target the <body> tag from base.html */
+/* This is a special trick to style the body of *only* this page */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-image: url('https://idsb.tmgrup.com.tr/ly/uploads/images/2022/11/13/240987.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed; /* Makes the background stay in place */
+    color: #FFF8DC;
+}
+
+/* This is the main content block for our page */
+.success-page-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Fill the screen below the header */
+    margin: 0;
+    padding: 20px;
+}
+
+.success-container {
+    background-color: rgb(136, 100, 45, 0.75); /* Made it a bit more opaque */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 500px;
+}
+
+.success-container h1 {
+    color: #fff; /* Brighter color */
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.success-container p {
+    font-size: 18px;
+    color: #eee;
+    margin-bottom: 30px;
+}
+
+.success-icon {
+    font-size: 70px;
+    color: rgb(75, 158, 0); 
+    margin-bottom: 15px;
+}
+
+.button {
+    display: inline-block;
+    text-decoration: none;
+    padding: 12px 25px;
+    background-color: rgb(105, 41, 0); 
+    color: rgb(255, 222, 173);
+    border-radius: 5px;
+    font-weight: 700;
+    transition: background-color 0.3s, transform 0.2s;
+    margin: 5px;
+}
+
+.button:hover {
+    background-color: rgb(139, 69, 19);
+    transform: translateY(-2px);
+}

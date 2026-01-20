@@ -1,0 +1,258 @@
+/* =========================================
+   MAIN STYLESHEET (styles.css)
+   ========================================= */
+
+/* --- 1. General Setup & Fonts --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* --- 2. Base.html Header (Main Navigation) --- */
+.header {
+    background-color: #ffffff;
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: sticky; /* Makes it stick to the top */
+    top: 0;
+    z-index: 1000;
+}
+
+.header .logo a {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    text-decoration: none;
+}
+
+.header .nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.header .nav-links li {
+    margin-left: 25px;
+}
+
+.header .nav-links a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.header .nav-links a:hover {
+    color: #6a63ff; /* Primary color */
+}
+
+/* Special buttons for login/logout */
+.header .btn-signup {
+    background-color: #6a63ff;
+    color: #fff !important;
+    padding: 10px 18px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.header .btn-signup:hover {
+    background-color: #554dff;
+}
+.header .btn-logout {
+    background-color: #ff6363;
+    color: #fff !important;
+    padding: 10px 18px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.header .btn-logout:hover {
+    background-color: #ff4848;
+}
+
+/* --- 3. Hero Section (index.html) --- */
+.hero {
+    height: 100vh; /* Full viewport height */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    /* This background image is for the hero only */
+    background: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=2070') no-repeat center center/cover;
+}
+
+.hero .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+}
+
+.hero .hero-content {
+    position: relative; /* To be on top of the overlay */
+    z-index: 10;
+}
+
+.hero h1 {
+    font-size: 56px;
+    margin: 0 0 15px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero p {
+    font-size: 22px;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero .cta-btn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    background-color: transparent;
+    border: 2px solid #fff;
+    padding: 14px 28px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.hero .cta-btn:hover {
+    background-color: #fff;
+    color: #333;
+}
+
+/* --- 4. Parallax Sections (index.html) --- */
+.parallax-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.parallax-background {
+    /* The scrolling background image */
+    background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=2070') no-repeat center center/cover;
+    /* This creates the parallax effect */
+    background-attachment: fixed;
+    
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Behind the content sections */
+}
+
+.parallax-section {
+    min-height: 60vh; /* Height of each content block */
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+    /* Slightly transparent white background */
+    background-color: rgba(255, 255, 255, 0.9);
+    margin: 40px auto; /* Spacing between sections */
+    width: 80%;
+    max-width: 900px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.parallax-section h2 {
+    font-size: 36px;
+    margin-top: 0;
+}
+
+.parallax-section p {
+    font-size: 18px;
+    max-width: 600px;
+    margin-bottom: 30px;
+}
+
+/* --- 5. Shared Button Style (.btn) --- */
+/* This ensures buttons look the same across all pages */
+.btn {
+    width: auto;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #6a63ff; /* Primary color from form_styles.css */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+    background-color: #554dff;
+    transform: translateY(-2px);
+}
+
+/* --- 6. Base.html Footer --- */
+footer {
+    text-align: center;
+    padding: 30px;
+    background-color: #333;
+    color: #aaa;
+    margin-top: 40px;
+}
+
+/* --- 7. Responsive (Mobile) --- */
+@media (max-width: 768px) {
+    /* Fix main header nav */
+    .header {
+        flex-direction: column;
+        padding: 15px;
+    }
+    .header .nav-links {
+        margin-top: 15px;
+    }
+    .header .nav-links li {
+        margin-left: 15px;
+    }
+
+    /* Fix hero */
+    .hero h1 {
+        font-size: 36px;
+    }
+    .hero p {
+        font-size: 18px;
+    }
+    .hero .cta-btn {
+        font-size: 16px;
+        padding: 12px 24px;
+    }
+
+    /* Fix parallax sections */
+    .parallax-section {
+        width: 90%;
+        padding: 40px 20px;
+        min-height: auto;
+    }
+    .parallax-section h2 {
+        font-size: 28px;
+    }
+}

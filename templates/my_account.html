@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}My Account - Hotel AnCasa{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='form_styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='services.css') }}"> <style>
+        .account-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .account-header h2 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+        .account-header p {
+            font-size: 18px;
+            color: #555;
+        }
+        
+        /* Style for the booking lists */
+        .booking-list-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .booking-list-container h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            color: #333;
+            border-bottom: 2px solid #6a63ff;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        
+        .booking-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .booking-card-info h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            margin: 0 0 10px 0;
+        }
+        
+        .booking-card-info p {
+            margin: 5px 0;
+            color: #333;
+        }
+        
+        .booking-card-info .dates {
+            font-weight: 600;
+        }
+        
+        .booking-card-status {
+            text-align: right;
+        }
+        
+        .booking-card-status .status-paid {
+            font-weight: 700;
+            color: #28a745; /* Green */
+        }
+        
+        .booking-card-status .status-pending {
+            font-weight: 700;
+            color: #dc3545; /* Red */
+        }
+        
+        .no-bookings {
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            color: #555;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<section class="form-section">
+    <div class="container" style="max-width: 1000px;">
+        
+        <div class="account-header">
+            <h2>Welcome, {{ current_user.name }}!</h2>
+            <p>{{ current_user.email }}</p>
+        </div>
+
+        <div class="booking-list-container">
+            <h3>Upcoming Bookings</h3>
+            
+            {% for booking in upcoming_bookings %}
+                <div class="booking-card">
+                    <div class="booking-card-info">
+                        <h4>{{ booking.room_type }} (Room {{ booking.room_number }})</h4>
+                        <p class="dates">
+                            {{ booking.checkin.strftime('%d %b, %Y') }}
+                            &rarr;
+                            {{ booking.checkout.strftime('%d %b, %Y') }}
+                        </p>
+                        <p>Booking ID: {{ booking.customer_id }}</p>
+                    </div>
+                    <div class="booking-card-status">
+                        {% if booking.payment_status == 'Paid' %}
+                            <span class="status-paid">&#10004; Paid</span>
+                        {% else %}
+                            <span class="status-pending">Payment Pending</span>
+                            <a href="{{ url_for('payment') }}" class="btn" style="margin-top: 10px;">Pay Now</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="no-bookings">
+                    <p>You have no upcoming bookings.</p>
+                    <a href="{{ url_for('book_room') }}" class="btn">Book a Stay</a>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="booking-list-container">
+            <h3>Past Bookings</h3>
+            
+            {% for booking in past_bookings %}
+                <div class="booking-card" style="opacity: 0.7;">
+                    <div class="booking-card-info">
+                        <h4>{{ booking.room_type }} (Room {{ booking.room_number }})</h4>
+                        <p class="dates">
+                            {{ booking.checkin.strftime('%d %b, %Y') }}
+                            &rarr;
+                            {{ booking.checkout.strftime('%d %b, %Y') }}
+                        </p>
+                        <p>Booking ID: {{ booking.customer_id }}</p>
+                    </div>
+                    <div class="booking-card-status">
+                        <span class="status-paid">&#10004; Completed</span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="no-bookings">
+                    <p>You have no past bookings.</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+</section>
+{% endblock %}

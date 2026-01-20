@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Our Rooms - Hotel AnCasa{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='room.css') }}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <header class="hero small-hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>Our Luxurious Rooms</h1>
+        </div>
+    </header>
+
+    <section class="room-details">
+        <h1 class="section-title">Explore Our Accommodations</h1>
+        
+        <div class="room-grid">
+            
+            {% for room in rooms %}
+            <div class="room-card">
+                <img src="{{ room.image_url_or_default }}" alt="{{ room.room_type }}" class="room-image">
+                <div class="room-info">
+                    <h2>{{ room.room_type }}</h2>
+                    
+                    <p class="price">INR {{ room.price }} / night</p>
+                    
+                    <p class="description">
+                        {{ room.description }}
+                    </p>
+                    
+                    <a href="{{ url_for('book_room') }}" class="btn">Book Now</a>
+                </div>
+            </div>
+            {% else %}
+            <div style="text-align: center; grid-column: 1 / -1;">
+                <h2>No rooms could be loaded at this time.</h2>
+                <p>Please check back later or contact support.</p>
+            </div>
+            {% endfor %}
+            </div>
+    </section>
+
+    {% endblock %}

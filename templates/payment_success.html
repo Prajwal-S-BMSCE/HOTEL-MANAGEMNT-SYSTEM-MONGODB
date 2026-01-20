@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Successful{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='payment_success.css') }}">
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="success-page-wrapper">
+    <div class="success-card">
+        
+        <div class="success-icon-container">
+            <div class="success-icon">&#10004;</div>
+        </div>
+
+        <h1>Payment Successful!</h1>
+        <p class="subtitle">Thank you, {{ payment_info.name }}. Your transaction has been completed.</p>
+
+        <!-- Invoice Details Box -->
+        <div class="invoice-details" id="printable-invoice">
+            <div class="invoice-row">
+                <span>Transaction ID:</span>
+                <span>{{ payment_info.payment_id }}</span>
+            </div>
+            <div class="invoice-row">
+                <span>Date:</span>
+                <span>{{ payment_info.date }}</span>
+            </div>
+            <div class="invoice-row">
+                <span>Room Type:</span>
+                <span>{{ payment_info.room_type }}</span>
+            </div>
+            
+            <div class="invoice-divider"></div>
+            
+            <div class="invoice-row">
+                <span>Room Charges:</span>
+                <span>₹ {{ payment_info.room_charges }}</span>
+            </div>
+            <div class="invoice-row">
+                <span>Restaurant Charges:</span>
+                <span>₹ {{ payment_info.restaurant_charges }}</span>
+            </div>
+            
+            <div class="invoice-divider"></div>
+            
+            <div class="invoice-total">
+                <span>Total Paid:</span>
+                <span>₹ {{ payment_info.total_amount }}</span>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-group">
+            <button onclick="window.print()" class="btn-download">
+                <span>&#128462;</span> Download Invoice
+            </button>
+            <a href="{{ url_for('home') }}" class="btn-home">Back Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Trigger Confetti on Load
+    window.onload = function() {
+        var duration = 3 * 1000;
+        var animationEnd = Date.now() + duration;
+        var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+        function random(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        var interval = setInterval(function() {
+          var timeLeft = animationEnd - Date.now();
+
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+
+          var particleCount = 50 * (timeLeft / duration);
+          // since particles fall down, start a bit higher than random
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
+    };
+</script>
+{% endblock %}

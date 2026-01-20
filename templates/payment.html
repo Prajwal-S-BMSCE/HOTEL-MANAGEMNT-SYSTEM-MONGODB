@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}My Bills & Payment{% endblock %}
+
+{% block head %}
+    <!-- 
+      THIS IS THE FIX!
+      Linking the new vibrant payment CSS.
+    -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='payment.css') }}">
+    
+    <!-- Razorpay Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<!-- Page Wrapper with Background Image -->
+<div class="payment-page-wrapper">
+    
+    <!-- The Glass Container -->
+    <div class="payment-container-glass">
+        <h2>My Bills & Payment</h2>
+        
+        <!-- Error Messages -->
+        <div id="payment-error" class="flash danger" style="display:none;"></div>
+
+        <!-- 1. Booking Selection -->
+        <div class="form-group">
+            <label for="booking-select">Select a Booking to Pay</label>
+            <select id="booking-select" class="form-input-dark">
+                <option value="" disabled selected>-- Select your booking --</option>
+                {% for booking in bookings %}
+                    <option value="{{ booking._id }}">
+                        {{ booking.room_type }} (Room {{ booking.room_number }}) - 
+                        {{ booking.checkin.strftime('%d %b, %Y') }}
+                    </option>
+                {% else %}
+                    <option disabled>You have no bookings to display.</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <!-- 2. Bill Details (Hidden initially) -->
+        <div id="bill-details-container" style="display:none;">
+            <div class="bill-card">
+                <h3>Bill Summary</h3>
+                
+                <div class="bill-item">
+                    <span>Guest Name:</span>
+                    <span id="bill-name"></span>
+                </div>
+                <div class="bill-item">
+                    <span>Check-in:</span>
+                    <span id="bill-checkin"></span>
+                </div>
+                <div class="bill-item">
+                    <span>Check-out:</span>
+                    <span id="bill-checkout"></span>
+                </div>
+                
+                <div class="bill-divider"></div>
+                
+                <div class="bill-item">
+                    <span>Room Charges:</span>
+                    <span id="bill-room"></span>
+                </div>
+                <div class="bill-item">
+                    <span>Restaurant Charges:</span>
+                    <span id="bill-food"></span>
+                </div>
+                
+                <div class="bill-divider"></div>
+                
+                <div class="bill-total">
+                    <span>Total Due:</span>
+                    <span id="bill-total"></span>
+                </div>
+            </div>
+            
+            <!-- 3. Action Buttons -->
+            <button id="pay-button" class="btn-vibrant">Secure Pay Now</button>
+            
+            <div id="payment-loader">Processing Secure Payment...</div>
+            
+            <!-- Paid Message -->
+            <div id="paid-message" class="paid-message" style="display:none;">
+                &#10004; This booking is fully paid.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('booking-select').addEventListener('change', function() {
+        const bookingId = this.value;
+        if (!bookingId) return;
+
+        const billContainer = document.getElementById('bill-details-container');
+        const payButton = document.getElementById('pay-button');
+        const paidMessage = document.getElementById('paid-message');
+        const errorDiv = document.getElementById('payment-error');
+        
+        errorDiv.style.display = 'none';
+        billContainer.style.display = 'none'; 
+        
+        // --- 1. Fetch Bill Details ---
+        fetch(`/get_customer_details?booking_id=${bookingId}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Could not fetch bill details.');
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) throw new Error(data.error);
+
+                // Populate bill details
+                document.getElementById('bill-name').textContent = data.name;
+                document.getElementById('bill-checkin').textContent = data.check_in;
+                document.getElementById('bill-checkout').textContent = data.check_out;
+                document.getElementById('bill-room').textContent = `₹ ${data.room_charges.toFixed(2)}`;
+                document.getElementById('bill-food').textContent = `₹ ${data.restaurant_charges.toFixed(2)}`;
+                document.getElementById('bill-total').textContent = `₹ ${data.total_amount.toFixed(2)}`;
+                
+                // Store amount and bookingId
+                payButton.dataset.amount = data.total_amount;
+                payButton.dataset.bookingId = bookingId;
+
+                // Show/hide button based on payment status
+                if (data.payment_status === 'Paid') {
+                    payButton.style.display = 'none';
+                    paidMessage.style.display = 'block';
+                } else {
+                    payButton.style.display = 'block';
+                    paidMessage.style.display = 'none';
+                }
+                
+                billContainer.style.display = 'block';
+            })
+            .catch(err => {
+                errorDiv.textContent = `Error: ${err.message}`;
+                errorDiv.style.display = 'block';
+            });
+    });
+
+    document.getElementById('pay-button').addEventListener('click', function() {
+        const payButton = this;
+        const totalAmount = payButton.dataset.amount;
+        const bookingId = payButton.dataset.bookingId;
+        const loader = document.getElementById('payment-loader');
+        const errorDiv = document.getElementById('payment-error');
+
+        payButton.style.display = 'none';
+        loader.style.display = 'block';
+        errorDiv.style.display = 'none';
+        
+        // --- 2. Create Razorpay Order ---
+        fetch('/api/create_payment_order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: parseFloat(totalAmount),
+                booking_id: bookingId
+            })
+        })
+        .then(response => {
+            if (!response.ok) return response.json().then(err => { throw new Error(err.error) });
+            return response.json();
+        })
+        .then(orderData => {
+            if (orderData.error) throw new Error(orderData.error);
+
+            // --- 3. Open Razorpay Checkout ---
+            const options = {
+                "key": orderData.key_id,
+                "amount": orderData.amount,
+                "currency": orderData.currency,
+                "name": "Hotel AnCasa",
+                "description": `Payment for Booking ${bookingId}`,
+                "order_id": orderData.order_id,
+                "handler": function (response) {
+                    verifyPayment(response, bookingId);
+                },
+                "prefill": {
+                    "name": orderData.name,
+                    "email": orderData.email,
+                    "contact": orderData.phone
+                },
+                "notes": {
+                    "booking_id": bookingId
+                },
+                "theme": {
+                    "color": "#10b981" // Matches the new green button
+                }
+            };
+            
+            options.modal = {
+                ondismiss: function() {
+                    loader.style.display = 'none';
+                    payButton.style.display = 'block';
+                    errorDiv.textContent = 'Payment was cancelled.';
+                    errorDiv.style.display = 'block';
+                }
+            };
+            
+            const rzp = new Razorpay(options);
+            rzp.open();
+        })
+        .catch(err => {
+            loader.style.display = 'none';
+            payButton.style.display = 'block';
+            errorDiv.textContent = `Error: ${err.message}`;
+            errorDiv.style.display = 'block';
+        });
+    });
+    
+    // --- 5. Verify Payment ---
+    function verifyPayment(paymentResponse, bookingId) {
+        const loader = document.getElementById('payment-loader');
+        const errorDiv = document.getElementById('payment-error');
+        
+        loader.textContent = "Verifying Payment...";
+        
+        fetch('/api/verify_payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+                razorpay_signature: paymentResponse.razorpay_signature,
+                booking_id: bookingId
+            })
+        })
+        .then(response => {
+            if (!response.ok) return response.json().then(err => { throw new Error(err.error) });
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.href = "{{ url_for('payment_success') }}";
+            }
+        })
+        .catch(err => {
+            loader.style.display = 'none';
+            errorDiv.textContent = `Payment Verification Failed: ${err.message}`;
+            errorDiv.style.display = 'block';
+        });
+    }
+</script>
+{% endblock %}

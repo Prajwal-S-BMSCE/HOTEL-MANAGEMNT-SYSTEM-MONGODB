@@ -1,0 +1,172 @@
+/* =========================================
+   FORM STYLES (for login, signup, etc.)
+   ========================================= */
+.form-section {
+    width: 100%;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: #f4f7f6;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+.form-section .container {
+    width: 100%;
+    max-width: 450px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    padding: 30px 40px;
+    box-sizing: border-box;
+}
+.form-section h2 {
+    text-align: center;
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+}
+.auth-form .form-group {
+    margin-bottom: 20px;
+}
+.auth-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+}
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"],
+.auth-form input[type="tel"],
+.auth-form select,
+.auth-form textarea,
+.auth-form input[type="date"] {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.auth-form input[type="text"]:focus,
+.auth-form input[type="email"]:focus,
+.auth-form input[type="password"]:focus {
+    outline: none;
+    border-color: #6a63ff;
+    box-shadow: 0 0 0 3px rgba(106, 99, 255, 0.1);
+}
+.auth-switch {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 15px;
+    color: #555;
+}
+.auth-switch a {
+    color: #6a63ff;
+    text-decoration: none;
+    font-weight: 600;
+}
+.flash-messages {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.flash {
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+}
+.flash.danger {
+    background-color: #fdeded;
+    color: #b91c1c;
+    border: 1px solid #f9caca;
+}
+.flash.success {
+    background-color: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+/* =========================================
+   FORM STYLES (for login, signup, etc.)
+   ========================================= */
+.form-section {
+    width: 100%;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: #f4f7f6;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+.form-section .container {
+    width: 100%;
+    max-width: 450px; /* This is why the login form is narrow */
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    padding: 30px 40px;
+    box-sizing: border-box;
+}
+.form-section h2 {
+    text-align: center;
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+}
+.auth-form .form-group {
+    margin-bottom: 20px;
+}
+.auth-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+}
+
+/* THIS IS THE CSS FOR THE DROPDOWN.
+  It targets <select> elements that have the class "auth-form".
+*/
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"],
+.auth-form input[type="tel"],
+.auth-form select,
+.auth-form textarea,
+.auth-form input[type="date"] {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    /* This makes it look like a text input */
+    appearance: none; 
+    background-color: #fff;
+    /* Add a custom dropdown arrow */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+.auth-form select:hover {
+    border-color: #aaa;
+}
+.auth-form select:focus {
+    outline: none;
+    border-color: #6a63ff;
+    box-shadow: 0 0 0 3px rgba(106, 99, 255, 0.1);
+}
+

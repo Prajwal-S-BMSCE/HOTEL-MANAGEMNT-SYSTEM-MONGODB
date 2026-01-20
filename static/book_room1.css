@@ -1,0 +1,153 @@
+.book-now-page-wrapper {
+    /* The Background Image */
+    background: url('https://images.unsplash.com/photo-1561501900-3701fa6a0864?auto=format&fit=crop&q=80&w=2070') no-repeat center center/cover;
+    
+    /* Ensure it fills the screen below the header */
+    min-height: calc(100vh - 70px); /* 70px is a guess for your header height */
+    padding: 60px 20px; /* Spacing for the form */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. The Transparent "Glass" Form Block */
+.booking-container-transparent {
+    width: 100%;
+    max-width: 800px;
+    
+    /* This is the transparent effect! */
+    background: rgba(0, 0, 0, 0.4);
+    
+    /* This is the "glass" blur effect */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    
+    border-radius: 15px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* 3. Text & Headers (Light on Dark) */
+.booking-container-transparent h2 {
+    color: #ffffff;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 32px;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.booking-container-transparent label {
+    color: #eee;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* 4. Form Inputs (Light on Dark) */
+.form-input {
+    width: 100%;
+    padding: 12px 9px;
+    background: rgba(255, 255, 255, 0.1); /* Transparent input */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    color: #ffffff; /* White text */
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #a855f7; /* Vibrant purple */
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3);
+}
+
+/* Fix placeholder text color */
+.form-input::placeholder {
+    color: #ccc;
+    opacity: 1;
+}
+
+/* Fix dropdown text color */
+.form-input option {
+    background: #333; /* Dark background for dropdown items */
+    color: #fff;
+}
+
+/* Fix date picker icon to be visible on dark */
+.form-input[type="date"] {
+    color-scheme: dark;
+}
+
+/* 5. Grid Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* 6. Vibrant Buttons */
+.btn-vibrant {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* A colorful gradient */
+    background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+}
+
+.btn-vibrant:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5);
+}
+
+.btn-vibrant:disabled {
+    background: #555;
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Specific style for the final Reserve button */
+#reserve-btn.btn-vibrant {
+    background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+#reserve-btn.btn-vibrant:hover {
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+}
+
+/* 7. Error Message */
+.flash.danger {
+    background: rgba(220, 38, 38, 0.8);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* 8. Responsive */
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr; /* Stack on mobile */
+    }
+    .booking-container-transparent {
+        padding: 30px 20px;
+    }
+}

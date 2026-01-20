@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Hotel AnCasa{% endblock %}</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="{{ url_for('home') }}">Hotel AnCasa</a>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('room') }}">Rooms</a></li>
+                
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('book_room') }}">Book Now</a></li>
+                    <li><a href="{{ url_for('services') }}">Room Service</a></li>
+                    <li><a href="{{ url_for('payment') }}">My Bill</a></li>
+                    <li><a href="{{ url_for('my_account') }}">My Account</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="btn-logout">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('signup') }}" class="btn-signup">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Hotel AnCasa. All Rights Reserved.</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

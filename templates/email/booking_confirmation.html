@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmation</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 20px;">
+    <h2>Your Booking is Confirmed, {{ name }}!</h2>
+    <p>Thank you for choosing Hotel AnCasa. Here are your booking details:</p>
+    
+    <ul style="list-style-type: none; padding-left: 0;">
+        <li><strong>Booking ID:</strong> {{ booking_id }}</li>
+        <li><strong>Room:</strong> {{ room_type }} (Room {{ room_number }})</li>
+        <li><strong>Check-in:</strong> {{ checkin_date }}</li>
+        <li><strong>Check-out:</strong> {{ checkout_date }}</li>
+    </ul>
+
+    <p>We look forward to welcoming you.</p>
+    <p>Best regards,<br>The Hotel AnCasa Team</p>
+</body>
+</html>

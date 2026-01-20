@@ -1,0 +1,180 @@
+/* =========================================
+   VIBRANT PAYMENT PAGE (payment_vibrant.css)
+   ========================================= */
+
+/* 1. Page Wrapper & Background */
+.payment-page-wrapper {
+    /* A luxurious hotel reception or abstract background */
+    background: url('https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=2070') no-repeat center center/cover;
+    min-height: calc(100vh - 70px); /* Fill screen below header */
+    padding: 60px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. The Glass Card Container */
+.payment-container-glass {
+    width: 100%;
+    max-width: 600px;
+    
+    /* Glass Effect */
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    color: #ffffff;
+}
+
+/* 3. Typography */
+.payment-container-glass h2 {
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+    color: #ccc;
+}
+
+/* 4. Dropdown Styling */
+.form-input-dark {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+.form-input-dark:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3);
+}
+
+.form-input-dark option {
+    background: #333;
+    color: #fff;
+}
+
+/* 5. Bill Details Section */
+.bill-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 25px;
+    margin-top: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bill-card h3 {
+    margin-top: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 15px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    text-align: center;
+}
+
+.bill-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #eee;
+}
+
+.bill-item span:first-child {
+    color: #bbb; /* Label color */
+}
+
+.bill-item span:last-child {
+    font-weight: 600; /* Value color */
+}
+
+.bill-divider {
+    border-top: 1px dashed rgba(255, 255, 255, 0.3);
+    margin: 20px 0;
+}
+
+.bill-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 10px;
+}
+
+.bill-total span:last-child {
+    color: #4ade80; /* Light green for money */
+}
+
+/* 6. Pay Button */
+.btn-vibrant {
+    width: 100%;
+    padding: 15px;
+    margin-top: 25px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%); /* Green to Blue gradient */
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.btn-vibrant:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+}
+
+/* 7. Paid Message */
+.paid-message {
+    text-align: center;
+    margin-top: 25px;
+    padding: 15px;
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    border-radius: 5px;
+    color: #4ade80;
+    font-weight: 600;
+}
+
+#payment-loader {
+    text-align: center;
+    margin-top: 20px;
+    color: #ccc;
+    display: none;
+}
+
+.flash.danger {
+    background: rgba(220, 38, 38, 0.8);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}

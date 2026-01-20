@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}Room Service{% endblock %}
+
+{% block head %}
+    <!-- 
+      THIS IS THE FIX!
+      We are linking our new, attractive CSS file.
+    -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='services.css') }}">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<!-- This new wrapper applies the background image -->
+<div class="service-page-wrapper">
+    
+    <h2>Order Room Service</h2>
+
+    <!-- Flash Messages -->
+    <div id="service-error" class="flash danger" style="display:none;"></div>
+    <div id="service-success" class="flash success" style="display:none;"></div>
+
+    <!-- 1. Booking Selection & Search (in a container) -->
+    <div class="booking-selection-container" style="max-width: 1300px; margin: 0 auto 30px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+            <label for="booking-select">Select your active booking:</label>
+            <!-- Added "form-input-dark" class to style the dropdown -->
+            <select id="booking-select" class="form-input-dark">
+                <option value="" disabled selected>-- Select your booking --</option>
+                {% for booking in bookings %}
+                    <option value="{{ booking._id }}">
+                        {{ booking.room_type }} (Room {{ booking.room_number }})
+                    </option>
+                {% else %}
+                    <option disabled>You have no active bookings.</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="menu-search">Search Menu</label>
+            <!-- Added "form-input-dark" class to style the search bar -->
+            <input type="text" id="menu-search" class="form-input-dark" placeholder="Search for 'Biryani', 'Dosa', etc.">
+        </div>
+    </div>
+    
+    <div id="service-loader" style="color: #fff; font-size: 20px;">Loading...</div>
+
+    <!-- 2. Menu and Cart -->
+    <div id="service-content" class="service-container" style="display:none;">
+        
+        <!-- 2a. Menu Section (now a "glass" card) -->
+        <div class="menu-section">
+            <div id="menu-loader" style="color: #fff; font-size: 20px;">Loading menu...</div>
+            <div id="menu-grid">
+                <!-- Menu items will be injected here by JS -->
+            </div>
+        </div>
+        
+        <!-- 2b. Cart Section (now a "glass" card) -->
+        <div class="cart-section">
+            <h3>Your Order</h3>
+            <ul id="cart-items-list">
+                <li>Your cart is empty.</li>
+            </ul>
+            <div id="cart-total">Total: ₹0.00</div>
+            <!-- Added "btn-vibrant" class -->
+            <button id="place-order-btn" class="btn-vibrant" disabled>Place Order</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // --- Global variables to store state ---
+    let menu = []; 
+    let cart = {}; 
+    let selectedBookingId = null;
+
+    const bookingSelect = document.getElementById('booking-select');
+    const serviceContent = document.getElementById('service-content');
+    const menuGrid = document.getElementById('menu-grid');
+    const cartList = document.getElementById('cart-items-list');
+    const cartTotalEl = document.getElementById('cart-total');
+    const placeOrderBtn = document.getElementById('place-order-btn');
+    const menuLoader = document.getElementById('menu-loader');
+    const serviceLoader = document.getElementById('service-loader');
+    const errorDiv = document.getElementById('service-error');
+    const successDiv = document.getElementById('service-success');
+    const searchInput = document.getElementById('menu-search');
+
+    // --- 1. Event Listener for Booking Selection ---
+    bookingSelect.addEventListener('change', function() {
+        selectedBookingId = this.value;
+        if (selectedBookingId) {
+            serviceContent.style.display = 'flex';
+            fetchMenu();
+        }
+    });
+
+    // --- 2. Fetch Menu from our API ---
+    function fetchMenu() {
+        menuLoader.style.display = 'block';
+        menuGrid.innerHTML = '';
+        
+        fetch('/api/get_menu')
+            .then(response => response.json())
+            .then(data => {
+                menuLoader.style.display = 'none';
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+                menu = data; 
+                renderMenu();
+            })
+            .catch(err => {
+                menuLoader.style.display = 'none';
+                showError('Could not load menu. Please refresh.');
+            });
+    }
+
+    // --- 3. Render Menu Items (With Categories) ---
+    function renderMenu() {
+        menuGrid.innerHTML = '';
+        if (menu.length === 0) {
+            menuGrid.innerHTML = '<p style="color: #fff;">No menu items available at this time.</p>';
+            return;
+        }
+        
+        menu.forEach(category => {
+            const categoryHeader = document.createElement('h2');
+            categoryHeader.className = 'menu-category-header';
+            categoryHeader.textContent = category._id;
+            menuGrid.appendChild(categoryHeader);
+            
+            const categoryGrid = document.createElement('div');
+            categoryGrid.className = 'menu-category-grid';
+
+            category.items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'menu-item-card';
+                card.innerHTML = `
+                    <img src="${item.image_url}" alt="${item.name}">
+                    <div class="menu-item-info">
+                        <div>
+                            <h4 class="menu-item-name">${item.name}</h4>
+                            <div class="price">₹${item.price.toFixed(2)}</div>
+                        </div>
+                        <!-- Added "btn-vibrant" class -->
+                        <button class="btn-vibrant add-to-cart-btn" data-id="${item._id}" style="padding: 10px; font-size: 14px;">Add to Cart</button>
+                    </div>
+                `;
+                categoryGrid.appendChild(card);
+            });
+            
+            menuGrid.appendChild(categoryGrid);
+        });
+    }
+    
+    // --- 4. Add to Cart ---
+    menuGrid.addEventListener('click', function(e) {
+        if (e.target.classList.contains('add-to-cart-btn')) {
+            const itemId = e.target.dataset.id;
+            
+            if (cart[itemId]) {
+                cart[itemId].quantity++;
+            } else {
+                const itemToAdd = menu.flatMap(category => category.items).find(item => item._id === itemId);
+                if (itemToAdd) {
+                    cart[itemId] = {
+                        _id: itemToAdd._id,
+                        name: itemToAdd.name,
+                        price: itemToAdd.price,
+                        quantity: 1
+                    };
+                }
+            }
+            updateCart();
+        }
+    });
+
+    // --- 5. Update Cart UI ---
+    function updateCart() {
+        cartList.innerHTML = ''; 
+        let total = 0;
+        const cartItems = Object.values(cart);
+
+        if (cartItems.length === 0) {
+            cartList.innerHTML = '<li style="color: #ccc;">Your cart is empty.</li>';
+            placeOrderBtn.disabled = true;
+        } else {
+            cartItems.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'cart-item';
+                li.innerHTML = `
+                    <span class="cart-item-name">${item.name} (x${item.quantity})</span>
+                    <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                `;
+                cartList.appendChild(li);
+                total += item.price * item.quantity;
+            });
+            placeOrderBtn.disabled = false;
+        }
+        cartTotalEl.textContent = `Total: ₹${total.toFixed(2)}`;
+    }
+
+    // --- 6. Place Order ---
+    placeOrderBtn.addEventListener('click', function() {
+        serviceLoader.style.display = 'block';
+        placeOrderBtn.disabled = true;
+        showError('');
+        showSuccess('');
+        
+        const orderData = {
+            booking_id: selectedBookingId,
+            cart: Object.values(cart)
+        };
+        
+        fetch('/add_service', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            serviceLoader.style.display = 'none';
+            if (data.error) {
+                showError(data.error);
+                placeOrderBtn.disabled = false;
+            } else {
+                showSuccess(data.message);
+                setTimeout(() => {
+                    window.location.href = "{{ url_for('order_successful') }}";
+                }, 2000);
+            }
+        })
+        .catch(err => {
+            serviceLoader.style.display = 'none';
+            placeOrderBtn.disabled = false;
+            showError('An error occurred. Please try again.');
+        });
+    });
+
+    // --- 7. Live Search Bar ---
+    searchInput.addEventListener('keyup', function() {
+        const query = searchInput.value.toLowerCase().trim();
+        const allCards = document.querySelectorAll('.menu-item-card');
+        
+        allCards.forEach(card => {
+            const itemName = card.querySelector('.menu-item-name').textContent.toLowerCase();
+            
+            if (itemName.includes(query)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('.menu-category-grid').forEach(grid => {
+            const hasVisibleItem = grid.querySelector('.menu-item-card[style*="display: flex"]');
+            const header = grid.previousElementSibling;
+            
+            if (header && header.classList.contains('menu-category-header')) {
+                if (hasVisibleItem) {
+                    header.style.display = 'block';
+                    grid.style.display = 'grid';
+                } else {
+                    header.style.display = 'none';
+                    grid.style.display = 'none';
+                }
+            }
+        });
+    });
+
+
+    // --- Helper Functions for alerts ---
+    function showError(message) {
+        if (!message) {
+            errorDiv.style.display = 'none';
+            return;
+        }
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+    
+    function showSuccess(message) {
+        if (!message) {
+            successDiv.style.display = 'none';
+            return;
+        }
+        successDiv.textContent = message;
+        successDiv.style.display = 'block';
+    }
+</script>
+{% endblock %}

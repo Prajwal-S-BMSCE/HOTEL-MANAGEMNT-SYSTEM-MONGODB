@@ -1,0 +1,121 @@
+/* =========================================
+   ROOMS PAGE STYLES (room.css)
+   ========================================= */
+
+body {
+    background-color: #f4f7f6;
+}
+
+/* --- Hero Section for Room Page --- */
+.hero.small-hero {
+    height: 40vh; /* Shorter hero */
+    min-height: 300px;
+    background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=2070') no-repeat center center/cover;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+}
+
+.hero .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+}
+
+.hero .hero-content {
+    position: relative;
+    z-index: 10;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Room Details Section --- */
+.room-details {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 40px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* --- Dynamic Room Card --- */
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.room-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    overflow: hidden; /* Clips the image */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.room-card .room-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover; /* Ensures image covers the space */
+}
+
+.room-card .room-info {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Makes card same height */
+}
+
+.room-card h2 {
+    font-size: 24px;
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.room-card .price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #6a63ff; /* Primary color */
+    margin-bottom: 15px;
+}
+
+.room-card .description {
+    font-size: 15px;
+    color: #555;
+    line-height: 1.6;
+    flex-grow: 1; /* Pushes button to bottom */
+    margin-bottom: 20px;
+}
+
+/* --- Footer (uses main styles.css, but just in case) --- */
+.footer {
+    text-align: center;
+    padding: 30px;
+    background-color: #333;
+    color: #aaa;
+    margin-top: 40px;
+}

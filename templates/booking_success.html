@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Successful - Hotel AnCasa{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='booking_success.css') }}">
+{% endblock %}
+
+
+{% block content %}
+    <section class="success-section">
+        <div class="success-container">
+            <h1>Booking Confirmed!</h1>
+            <p>Thank you for choosing Hotel AnCasa. Your booking has been successfully confirmed.</p>
+            
+            <div class="details">
+                <p><strong> Customer ID: {{ customer_id }}</strong></p>
+                <p><strong> Room Number: {{ room_number }}</strong></p>
+                <p>You can use your Customer ID for accessing our premium services.</p>
+            </div>
+
+            <a href="{{ url_for('home') }}" class="back-btn">Go to Home</a>
+        </div>
+    </section>
+{% endblock %}
